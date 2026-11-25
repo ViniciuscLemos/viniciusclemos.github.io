@@ -366,16 +366,30 @@ h2 {
   margin: 0;
 }
 
-.card h3 a {
+.card .open {
+  font: inherit;
   color: var(--text);
-  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
 }
 
-/* the whole card is the link, the title just carries the name */
-.card h3 a::after {
+/* the whole card is the button, the title just carries the name */
+.card .open::after {
   content: '';
   position: absolute;
   inset: 0;
+}
+
+.card .open:focus-visible {
+  outline: none;
+}
+
+.card:has(.open:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .card .tagline {
@@ -412,6 +426,111 @@ h2 {
   border-radius: 999px;
   background: var(--accent-2);
   color: var(--on-accent-2);
+}
+
+/* project details */
+dialog {
+  width: min(880px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  overflow: auto;
+}
+
+dialog[open] {
+  animation: pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+dialog::backdrop {
+  background: rgba(4, 8, 20, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+
+dialog img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+}
+
+.dialog-text {
+  padding: 24px clamp(18px, 4vw, 36px) 32px;
+}
+
+.dialog-text h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font: 600 clamp(1.4rem, 3.5vw, 1.9rem) var(--mono);
+  margin: 0 0 4px;
+}
+
+.dialog-text h2 .status {
+  position: static;
+}
+
+.dialog-text h3 {
+  font-size: 1rem;
+  margin: 22px 0 8px;
+}
+
+.dialog-text .tagline {
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+
+.dialog-text p {
+  margin: 0 0 12px;
+}
+
+.highlights {
+  margin: 0 0 18px;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.highlights li + li {
+  margin-top: 6px;
+}
+
+.dialog-text .chips {
+  margin-bottom: 14px;
+}
+
+.note {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.close {
+  position: sticky;
+  top: 12px;
+  float: right;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  margin: 12px 12px -52px 0;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--card) 85%, transparent);
+  color: var(--text);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 /* more projects */
