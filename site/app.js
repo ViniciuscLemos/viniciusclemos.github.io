@@ -1,9 +1,12 @@
-import { FEATURED, MORE } from './projects.js';
+import { FEATURED, MORE, TAGS } from './projects.js';
 
 document.documentElement.classList.add('js');
 
 const el = (tag, props = {}, ...children) => {
-  const node = Object.assign(document.createElement(tag), props);
+  // dataset can't be assigned whole, only filled in
+  const { dataset, ...rest } = props;
+  const node = Object.assign(document.createElement(tag), rest);
+  if (dataset) Object.assign(node.dataset, dataset);
   node.append(...children.filter((c) => c !== null && c !== undefined));
   return node;
 };
@@ -14,7 +17,7 @@ function card(project, index) {
   const img = el('img', { src: project.image, alt: project.alt, loading: 'lazy', decoding: 'async', width: 1280, height: 720 });
   const item = el(
     'li',
-    { className: 'reveal' },
+    { className: 'reveal', dataset: { tags: project.tags.join(' ') } },
     el(
       'article',
       { className: 'card' },
@@ -99,6 +102,44 @@ addEventListener('popstate', fromAddress);
 
 document.getElementById('project-grid').append(...FEATURED.map(card));
 fromAddress();
+
+// filter by what it's made with. Hidden cards leave the grid, and the ones that stay slide
+// into their new place (the FLIP trick: measure, change, then animate from the old spot)
+const grid = document.getElementById('project-grid');
+const count = document.getElementById('filter-count');
+const buttons = TAGS.map(([tag, label]) =>
+  el('button', { type: 'button', dataset: { tag }, onclick: () => filter(tag) }, label),
+);
+buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tag === 'all')));
+document.getElementById('filters').append(...buttons);
+
+function filter(tag) {
+  const items = [...grid.children];
+  const before = new Map(items.map((li) => [li, li.getBoundingClientRect()]));
+  let shown = 0;
+  for (const li of items) {
+    const match = tag === 'all' || li.dataset.tags.split(' ').includes(tag);
+    li.hidden = !match;
+    if (match) shown++;
+  }
+  buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tag === tag)));
+  count.textContent = tag === 'all' ? '' : `${shown} of ${items.length}`;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (const li of items) {
+    if (li.hidden) continue;
+    const old = before.get(li);
+    const now = li.getBoundingClientRect();
+    const was = old.width ? old : null;
+    li.animate(
+      was
+        ? [{ transform: `translate(${was.left - now.left}px, ${was.top - now.top}px)` }, { transform: 'none' }]
+        : [{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'none' }],
+      { duration: 380, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' },
+    );
+    // a card that comes back after the scroll animation already ran shouldn't stay invisible
+    li.classList.add('in');
+  }
+}
 document.getElementById('more-list').append(...MORE.map(moreItem));
 
 // reveal on scroll: each element animates once, the first time it shows up

@@ -183,6 +183,17 @@ export const FEATURED = [
   },
 ];
 
+// the filter buttons, in this order; a project shows under every tag it has
+export const TAGS = [
+  ['all', 'All'],
+  ['web', 'Web apps'],
+  ['typescript', 'TypeScript'],
+  ['java', 'Java'],
+  ['python', 'Python'],
+  ['ai', 'AI'],
+  ['automation', 'Automation'],
+];
+
 export const MORE = [
   { name: 'task-api-nodejs', what: 'Task API with JWT login and interactive Swagger docs', stack: 'Node, Express, PostgreSQL', repo: 'https://github.com/ViniciuscLemos/task-api-nodejs' },
   { name: 'banking-system-java', what: 'A bank in the terminal: transfers inside a DB transaction, CPF validation', stack: 'Java, SQLite', repo: 'https://github.com/ViniciuscLemos/banking-system-java' },

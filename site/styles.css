@@ -306,6 +306,53 @@ h2 {
   margin: 0 0 36px;
 }
 
+/* filter */
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 28px;
+}
+
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#filters button {
+  font: 500 0.88rem var(--mono);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+#filters button:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+#filters button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.filter-count {
+  margin: 0;
+  font: 400 0.85rem var(--mono);
+  color: var(--muted);
+}
+
+.grid li[hidden] {
+  display: none;
+}
+
 /* project cards */
 .grid {
   list-style: none;

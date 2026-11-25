@@ -22,6 +22,8 @@ Each card opens the project in a `<dialog>`: a bigger screenshot, what was inter
 
 ![The details of booking-system: screenshot, description and what was interesting](docs/details.png)
 
+Above the cards, buttons filter them by what they're made with (Java, Python, TypeScript, AI...). The cards that stay slide into their new places instead of jumping: each one is measured before and after the change and animated from where it was (the FLIP technique).
+
 ### The scroll effects
 
 - Sections and cards slide up as they come into view. An `IntersectionObserver` adds a class the first time each one shows up, and cards in the same row come in one after the other.
@@ -38,6 +40,6 @@ npx playwright install chromium
 npm run e2e
 ```
 
-Playwright opens the page on a desktop and a phone screen: every project opens with its links (and closes with Esc or the back button), things appear as they scroll in, the menu follows the section, reduced motion shows everything, nothing is wider than the screen, and axe finds no accessibility problems in the dark or the light theme. The deploy only happens after these pass.
+Playwright opens the page on a desktop and a phone screen: the filter shows the right projects, every project opens with its links (and closes with Esc or the back button), things appear as they scroll in, the menu follows the section, reduced motion shows everything, nothing is wider than the screen, and axe finds no accessibility problems in the dark or the light theme. The deploy only happens after these pass.
 
 MIT license.

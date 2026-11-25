@@ -36,6 +36,23 @@ test('a project without a live site only links to the code', async ({ page }) =>
   await expect(dialog).toBeHidden();
 });
 
+test('filters the projects by what they are made with', async ({ page }) => {
+  await page.goto('/');
+  const cards = page.locator('#project-grid .card:visible');
+  await page.getByRole('button', { name: 'Java', exact: true }).click();
+  await expect(cards).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'booking-system' })).toBeVisible();
+  await expect(page.locator('#filter-count')).toHaveText('1 of 10');
+
+  await page.getByRole('button', { name: 'Python' }).click();
+  await expect(page.getByRole('button', { name: 'Python' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(cards).toHaveCount(3);
+
+  await page.getByRole('button', { name: 'All' }).click();
+  await expect(cards).toHaveCount(10);
+  await expect(page.locator('#filter-count')).toHaveText('');
+});
+
 test('things appear as they scroll into view', async ({ page }) => {
   await page.goto('/');
   const last = page.locator('#contact h2');
