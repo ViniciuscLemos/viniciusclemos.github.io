@@ -1,0 +1,195 @@
+// Everything the page shows about each project lives here, so adding one is a new entry
+// and nothing else. `tags` drive the filter, `stack` is what shows on the card.
+
+export const FEATURED = [
+  {
+    id: 'booking-system',
+    name: 'booking-system',
+    tagline: 'Online booking for a barbershop or a clinic',
+    description:
+      'The rules are the point: lunch breaks, clean-up time between clients, a team with their own hours, and a Postgres constraint so two people never get the same time, even clicking at the same moment. The owner gets a waiting list, reminders and the month in numbers.',
+    highlights: [
+      'A database exclusion constraint makes double booking impossible, not just unlikely',
+      'Free times come from the same check that accepts a booking, so they always agree',
+      'Calendar file (.ics) with reminders for the client, a waiting list and no-show history',
+    ],
+    stack: ['Java 21', 'Spring Boot 4', 'PostgreSQL'],
+    tags: ['java', 'web'],
+    image: 'img/booking-system.webp',
+    alt: 'Booking a haircut: the days with how many free times each, and the free times of the day picked',
+    live: 'https://booking-system-j7po.onrender.com',
+    repo: 'https://github.com/ViniciuscLemos/booking-system',
+  },
+  {
+    id: 'trail',
+    name: 'trail',
+    tagline: 'A link shortener that tells you who clicked',
+    description:
+      'Clicks per day and per hour, where they came from, phone or computer. Links can have a password or an end date, a QR code in a brand color, or be made fifty at a time from a spreadsheet. Bots and link previews don’t count.',
+    highlights: [
+      'Clicks go to the database in batches, so the redirect never waits for an insert',
+      'Link previews from WhatsApp, Slack and friends are told apart from people',
+      'Password-protected links with scrypt hashes and a limit on tries',
+    ],
+    stack: ['TypeScript', 'Fastify', 'PostgreSQL'],
+    tags: ['typescript', 'web'],
+    image: 'img/trail.webp',
+    alt: 'trail: the clicks of one short link per day, where they came from, device and browser',
+    live: 'https://trail-sfqz.onrender.com',
+    repo: 'https://github.com/ViniciuscLemos/url-shortener',
+  },
+  {
+    id: 'expense-tracker',
+    name: 'expense-tracker',
+    tagline: 'The month’s money told in plain sentences',
+    description:
+      'Budgets, goals, the year at a glance and bills split with a flatmate. It reads the bank’s CSV statement, suggests which bills should be automatic, and keeps working with no signal.',
+    highlights: [
+      'Entries written offline wait in the browser and go once, never twice',
+      'Reads Nubank, Inter and most bank CSVs, guessing the category of each line',
+      'Half of an expense can be someone else’s, and a page keeps who owes what',
+    ],
+    stack: ['React', 'FastAPI', 'PostgreSQL'],
+    tags: ['python', 'web'],
+    image: 'img/expense-tracker.webp',
+    alt: 'Marina’s November: a few sentences about the month, what came in and went out, and the budgets',
+    live: 'https://expense-tracker-qm7l.onrender.com',
+    repo: 'https://github.com/ViniciuscLemos/expense-tracker',
+  },
+  {
+    id: 'shortlist',
+    name: 'shortlist',
+    tagline: 'A resume against a job ad, in the browser',
+    description:
+      'Paste a resume and a job ad: what they require, the line of the resume that shows each one, what’s missing and how to show it, which saved ad fits best, and a cover letter to start from. PDF and Word included, nothing leaves the browser.',
+    highlights: [
+      'A skill dictionary instead of AI on purpose: instant, and you can see why it said so',
+      'Required, mentioned or a plus, read from how the ad is laid out',
+      'Every version of the resume scored against the same ad',
+    ],
+    stack: ['React', 'TypeScript', 'no server'],
+    tags: ['typescript', 'web'],
+    image: 'img/shortlist.webp',
+    alt: 'A resume against a job ad: 81 out of 100, what they require and what is missing',
+    live: 'https://viniciusclemos.github.io/shortlist/',
+    repo: 'https://github.com/ViniciuscLemos/shortlist',
+  },
+  {
+    id: 'online-store',
+    name: 'online-store',
+    tagline: 'A full e-commerce, hard parts included',
+    description:
+      'Stripe payments, email confirmation, password reset, stock that can’t oversell and an admin panel. The biggest thing I’ve built, with integration and end-to-end tests.',
+    highlights: [
+      'The payment is confirmed by Stripe’s webhook, never by the browser',
+      'Two people buying the last unit at once: one gets it, the other is told',
+      'Money in cents everywhere, so nothing is ever a cent off',
+    ],
+    stack: ['TypeScript', 'React', 'PostgreSQL', 'Stripe'],
+    tags: ['typescript', 'web'],
+    image: 'img/online-store.webp',
+    alt: 'The online store’s shop page',
+    live: 'https://online-store-6ogi.onrender.com',
+    repo: 'https://github.com/ViniciuscLemos/online-store',
+  },
+  {
+    id: 'minecraft-ai-agent',
+    name: 'minecraft-ai-agent',
+    tagline: 'A bot that plays Minecraft from plain text',
+    description:
+      'You ask in plain words, an AI plans the steps and tested skills do the work: wood, tools, stone, glass and a whole farmhouse in about 30 minutes, on your own server.',
+    highlights: [
+      'The AI only picks from skills that have tests, so a plan can’t invent moves',
+      'CI starts a real Minecraft server and plays whole scenarios',
+      'Chat commands for when you don’t want the AI: !craft, !mine, !build',
+    ],
+    stack: ['TypeScript', 'mineflayer', 'LLM'],
+    tags: ['typescript', 'ai'],
+    image: 'img/minecraft-ai-agent.webp',
+    alt: 'The bot finishing a farmhouse block by block, with its log beside it',
+    repo: 'https://github.com/ViniciuscLemos/minecraft-ai-agent',
+  },
+  {
+    id: 'overlog',
+    name: 'overlog',
+    tagline: 'The gym log I use myself',
+    description:
+      'Weight, reps and RIR on every set, what to lift next time, unlimited workouts and it works offline. Installable on the phone, no account, no ads. Still in progress.',
+    highlights: [
+      'Double progression decides the next weight, with RIR for the edge cases',
+      'Everything stays on the phone (IndexedDB), with a backup file to move it',
+      'Search in Portuguese finds exercises that only have an English name',
+    ],
+    stack: ['React', 'TypeScript', 'PWA'],
+    tags: ['typescript', 'web'],
+    image: 'img/overlog.webp',
+    alt: 'Overlog: logging a set, editing a workout and the progress chart',
+    live: 'https://viniciusclemos.github.io/overlog/',
+    repo: 'https://github.com/ViniciuscLemos/overlog',
+    status: 'in progress',
+  },
+  {
+    id: 'weather-now',
+    name: 'weather-now',
+    tagline: 'Weather for any city, nicely',
+    description:
+      'Now, the next hours, the week and air quality, with animated icons, a dark mode and times always in the city’s own timezone. The one I enjoyed building the most.',
+    highlights: [
+      'Icons drawn in SVG that stop moving when the system asks for less motion',
+      'A server in the middle caches by place and keeps the API key out of the page',
+      'End-to-end tests with an accessibility check on every page',
+    ],
+    stack: ['React', 'Node.js', 'Playwright'],
+    tags: ['javascript', 'web'],
+    image: 'img/weather-now.webp',
+    alt: 'Weather Now showing the forecast',
+    live: 'https://clima-agora-g5jz.onrender.com',
+    repo: 'https://github.com/ViniciuscLemos/weather-now',
+  },
+  {
+    id: 'price-watch',
+    name: 'price-watch-n8n',
+    tagline: 'Steam sale alerts every morning',
+    description:
+      'n8n checks the games on my list (in R$) and sends the deals to Discord, my phone or WhatsApp, saying when one is at the lowest price it has seen.',
+    highlights: [
+      'CI runs the real n8n workflow against a fake Steam',
+      'Watches a Steam wishlist too, not just a file',
+      'A small page with each game’s price history as a sparkline',
+    ],
+    stack: ['n8n', 'Python', 'Docker'],
+    tags: ['python', 'automation'],
+    image: 'img/price-watch.webp',
+    alt: 'The n8n workflow after a run, sending deals to Discord, the phone and WhatsApp',
+    repo: 'https://github.com/ViniciuscLemos/price-watch-n8n',
+  },
+  {
+    id: 'recon',
+    name: 'recon',
+    tagline: 'Reverse engineering for unknown binaries',
+    description:
+      'Reads PE and ELF files, disassembles the x86-64 code, rebuilds who calls whom and shows which functions changed between two versions, even with every name stripped out.',
+    highlights: [
+      'Finds main in a stripped binary from the compiler’s startup code',
+      'Diff down to the function: same code at another address still matches',
+      'Tested on Windows’ own binaries and on broken files',
+    ],
+    stack: ['Python', 'Capstone', 'LIEF'],
+    tags: ['python'],
+    image: 'img/recon.webp',
+    alt: 'Call graph RECON rebuilt from a binary with no function names',
+    repo: 'https://github.com/ViniciuscLemos/recon',
+    status: 'paused',
+  },
+];
+
+export const MORE = [
+  { name: 'task-api-nodejs', what: 'Task API with JWT login and interactive Swagger docs', stack: 'Node, Express, PostgreSQL', repo: 'https://github.com/ViniciuscLemos/task-api-nodejs' },
+  { name: 'banking-system-java', what: 'A bank in the terminal: transfers inside a DB transaction, CPF validation', stack: 'Java, SQLite', repo: 'https://github.com/ViniciuscLemos/banking-system-java' },
+  { name: 'webscraper-python', what: 'Book scraper that saves to PostgreSQL or CSV and builds an HTML gallery', stack: 'Python, BeautifulSoup', repo: 'https://github.com/ViniciuscLemos/webscraper-python' },
+  { name: 'csv-analyzer-python', what: 'Reads a sales CSV and builds a report with SQL', stack: 'Python, SQLite', repo: 'https://github.com/ViniciuscLemos/csv-analyzer-python' },
+  { name: 'sentinel', what: 'Says why a suspicious message is (or isn’t) a scam. Paused', stack: 'Java, Spring', repo: 'https://github.com/ViniciuscLemos/sentinel' },
+  { name: 'battleship-java', what: 'Battleship against a computer that hunts in lines', stack: 'Java', repo: 'https://github.com/ViniciuscLemos/battleship-java' },
+  { name: 'library-manager-c', what: 'Library system with reports and a binary data file', stack: 'C', repo: 'https://github.com/ViniciuscLemos/library-manager-c' },
+  { name: 'todo-list', what: 'One of my first projects: a to-do list for the terminal', stack: 'Python', repo: 'https://github.com/ViniciuscLemos/todo-list' },
+];

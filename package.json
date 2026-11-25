@@ -1,0 +1,13 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "description": "My portfolio site: projects, about and contact, with scroll animations. Plain HTML, CSS and JS.",
+  "scripts": {
+    "serve": "python -m http.server 4340 --directory site",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1"
+  }
+}
