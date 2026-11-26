@@ -25,10 +25,12 @@ const t = (key) => UI[lang][key];
 // a project with its texts in the current language
 const local = (project) => (lang === 'pt' ? { ...project, ...project.pt } : project);
 
+// "Java 21 / Spring Boot 4 / PostgreSQL", the way it would be written in a notebook
+const stackLine = (stack) => el('p', { className: 'stack' }, stack.join(' / '));
+
 function card(project, index) {
   const p = local(project);
-  const chips = el('ul', { className: 'chips' }, ...p.stack.map((s) => el('li', {}, s)));
-  const status = p.status ? el('span', { className: 'status' }, t(p.status)) : null;
+  const status = p.status ? el('span', { className: 'status' }, `[${t(p.status)}]`) : null;
   const img = el('img', { src: p.image, alt: p.alt, loading: 'lazy', decoding: 'async', width: 1280, height: 720 });
   const item = el(
     'li',
@@ -36,15 +38,15 @@ function card(project, index) {
     el(
       'article',
       { className: 'card' },
-      status,
       el('div', { className: 'shot' }, img),
       el(
         'div',
         { className: 'body' },
+        el('span', { className: 'number' }, String(index + 1).padStart(2, '0')),
         // a button, not a link: it opens the details here, the links to leave are inside
-        el('h3', {}, el('button', { type: 'button', className: 'open', onclick: () => openProject(project) }, p.name)),
+        el('h3', {}, el('button', { type: 'button', className: 'open', onclick: () => openProject(project) }, p.name), status),
         el('p', { className: 'tagline' }, p.tagline),
-        chips,
+        stackLine(p.stack),
       ),
     ),
   );
@@ -86,12 +88,12 @@ function openProject(project, { push = true } = {}) {
     el(
       'div',
       { className: 'dialog-text' },
-      el('h2', { id: 'dialog-title' }, p.name, p.status ? el('span', { className: 'status' }, t(p.status)) : null),
+      el('h2', { id: 'dialog-title' }, p.name, p.status ? el('span', { className: 'status' }, `[${t(p.status)}]`) : null),
       el('p', { className: 'tagline' }, p.tagline),
       el('p', {}, p.description),
       el('h3', {}, t('interesting')),
       el('ul', { className: 'highlights' }, ...p.highlights.map((h) => el('li', {}, h))),
-      el('ul', { className: 'chips' }, ...p.stack.map((s) => el('li', {}, s))),
+      stackLine(p.stack),
       // only the ones on Render's free plan sleep; GitHub Pages answers right away
       p.live?.includes('onrender.com') ? el('p', { className: 'note' }, t('wakeUp')) : null,
       links,
@@ -221,8 +223,8 @@ render({ first: true });
 fromAddress();
 document.querySelectorAll('.reveal').forEach((node) => reveal.observe(node));
 
-// the progress line, the header border and the fading glow of the hero all read the scroll,
-// so one listener updates them once per frame
+// the progress line and the header border both read the scroll, so one listener updates
+// them once per frame
 const root = document.documentElement;
 const header = document.querySelector('.top');
 let queued = false;
@@ -230,7 +232,6 @@ function onScroll() {
   queued = false;
   const max = root.scrollHeight - innerHeight;
   root.style.setProperty('--progress', max > 0 ? (scrollY / max).toFixed(4) : '0');
-  root.style.setProperty('--scroll', String(Math.min(scrollY, 1200)));
   header.classList.toggle('scrolled', scrollY > 8);
 }
 addEventListener('scroll', () => {
