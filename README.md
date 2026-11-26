@@ -28,6 +28,10 @@ Above the cards, buttons filter them by what they're made with (Java, Python, Ty
 
 The button next to the menu switches the whole page, projects included, between English and Portuguese. A link with `?lang=pt` opens it in Portuguese (handy for sharing with Brazilian recruiters), and without it the page follows what the visitor picked before or the browser's language. The fixed text is marked with `data-i18n` and comes from [`site/i18n.js`](site/i18n.js); each project carries its Portuguese text next to the English one.
 
+### The preview card
+
+When the link is shared on LinkedIn or WhatsApp, the card shows [`site/og.png`](site/og.png), a picture of the top of the page. Those apps don't run JavaScript, so the `og:` tags are fixed in the HTML, in Portuguese, since that's where the link gets shared the most.
+
 ### The scroll effects
 
 - Sections and cards slide up as they come into view. An `IntersectionObserver` adds a class the first time each one shows up, and cards in the same row come in one after the other.

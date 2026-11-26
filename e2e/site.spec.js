@@ -80,6 +80,16 @@ test('a link with ?lang=pt opens in Portuguese, project included', async ({ page
   await expect(page.locator('#filter-count')).toHaveText('3 de 10');
 });
 
+test('has a preview card for when the link is shared', async ({ page, request }) => {
+  await page.goto('/');
+  const image = await page.locator('meta[property="og:image"]').getAttribute('content');
+  expect(image).toBe('https://viniciusclemos.github.io/og.png');
+  // the file the tag points to is really there
+  const res = await request.get('/og.png');
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('image/png');
+});
+
 test('things appear as they scroll into view', async ({ page }) => {
   await page.goto('/');
   const last = page.locator('#contact h2');
