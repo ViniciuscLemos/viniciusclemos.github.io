@@ -24,6 +24,10 @@ Each card opens the project in a `<dialog>`: a bigger screenshot, what was inter
 
 Above the cards, buttons filter them by what they're made with (Java, Python, TypeScript, AI...). The cards that stay slide into their new places instead of jumping: each one is measured before and after the change and animated from where it was (the FLIP technique).
 
+### English and Portuguese
+
+The button next to the menu switches the whole page, projects included, between English and Portuguese. A link with `?lang=pt` opens it in Portuguese (handy for sharing with Brazilian recruiters), and without it the page follows what the visitor picked before or the browser's language. The fixed text is marked with `data-i18n` and comes from [`site/i18n.js`](site/i18n.js); each project carries its Portuguese text next to the English one.
+
 ### The scroll effects
 
 - Sections and cards slide up as they come into view. An `IntersectionObserver` adds a class the first time each one shows up, and cards in the same row come in one after the other.
@@ -40,6 +44,6 @@ npx playwright install chromium
 npm run e2e
 ```
 
-Playwright opens the page on a desktop and a phone screen: the filter shows the right projects, every project opens with its links (and closes with Esc or the back button), things appear as they scroll in, the menu follows the section, reduced motion shows everything, nothing is wider than the screen, and axe finds no accessibility problems in the dark or the light theme. The deploy only happens after these pass.
+Playwright opens the page on a desktop and a phone screen: the filter shows the right projects, the switch to Portuguese works and is remembered, every project opens with its links (and closes with Esc or the back button), things appear as they scroll in, the menu follows the section, reduced motion shows everything, nothing is wider than the screen, and axe finds no accessibility problems in the dark or the light theme, in either language. The deploy only happens after these pass.
 
 MIT license.

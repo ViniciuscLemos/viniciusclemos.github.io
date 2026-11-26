@@ -1,3 +1,4 @@
+import { UI, startingLang } from './i18n.js';
 import { FEATURED, MORE, TAGS } from './projects.js';
 
 document.documentElement.classList.add('js');
@@ -11,13 +12,27 @@ const el = (tag, props = {}, ...children) => {
   return node;
 };
 
+// the visitor's choice is a nicety: a private tab without storage just doesn't remember it
+const saved = (() => {
+  try {
+    return localStorage.getItem('lang');
+  } catch {
+    return null;
+  }
+})();
+let lang = startingLang(location.search, saved);
+const t = (key) => UI[lang][key];
+// a project with its texts in the current language
+const local = (project) => (lang === 'pt' ? { ...project, ...project.pt } : project);
+
 function card(project, index) {
-  const chips = el('ul', { className: 'chips' }, ...project.stack.map((s) => el('li', {}, s)));
-  const status = project.status ? el('span', { className: 'status' }, project.status) : null;
-  const img = el('img', { src: project.image, alt: project.alt, loading: 'lazy', decoding: 'async', width: 1280, height: 720 });
+  const p = local(project);
+  const chips = el('ul', { className: 'chips' }, ...p.stack.map((s) => el('li', {}, s)));
+  const status = p.status ? el('span', { className: 'status' }, t(p.status)) : null;
+  const img = el('img', { src: p.image, alt: p.alt, loading: 'lazy', decoding: 'async', width: 1280, height: 720 });
   const item = el(
     'li',
-    { className: 'reveal', dataset: { tags: project.tags.join(' ') } },
+    { className: 'reveal', dataset: { tags: p.tags.join(' ') } },
     el(
       'article',
       { className: 'card' },
@@ -27,8 +42,8 @@ function card(project, index) {
         'div',
         { className: 'body' },
         // a button, not a link: it opens the details here, the links to leave are inside
-        el('h3', {}, el('button', { type: 'button', className: 'open', onclick: () => openProject(project) }, project.name)),
-        el('p', { className: 'tagline' }, project.tagline),
+        el('h3', {}, el('button', { type: 'button', className: 'open', onclick: () => openProject(project) }, p.name)),
+        el('p', { className: 'tagline' }, p.tagline),
         chips,
       ),
     ),
@@ -46,7 +61,7 @@ function moreItem(project) {
       'a',
       { href: project.repo, target: '_blank', rel: 'noopener' },
       el('strong', {}, project.name),
-      el('span', {}, project.what),
+      el('span', {}, lang === 'pt' ? project.whatPt : project.what),
       el('small', {}, project.stack),
     ),
   );
@@ -55,38 +70,42 @@ function moreItem(project) {
 // the details of one project, in a <dialog>: the browser already handles Esc, keeps the
 // focus inside and gives it back to the card when it closes
 const dialog = document.getElementById('project-dialog');
+let shown = null;
 
 function openProject(project, { push = true } = {}) {
+  shown = project;
+  const p = local(project);
   const links = el(
     'div',
     { className: 'actions' },
-    project.live ? el('a', { className: 'button', href: project.live, target: '_blank', rel: 'noopener' }, 'Open it live') : null,
-    el('a', { className: 'button ghost', href: project.repo, target: '_blank', rel: 'noopener' }, 'Code on GitHub'),
+    p.live ? el('a', { className: 'button', href: p.live, target: '_blank', rel: 'noopener' }, t('live')) : null,
+    el('a', { className: 'button ghost', href: p.repo, target: '_blank', rel: 'noopener' }, t('code')),
   );
   dialog.querySelector('.dialog-body').replaceChildren(
-    el('img', { src: project.image, alt: project.alt, width: 1280, height: 720 }),
+    el('img', { src: p.image, alt: p.alt, width: 1280, height: 720 }),
     el(
       'div',
       { className: 'dialog-text' },
-      el('h2', { id: 'dialog-title' }, project.name, project.status ? el('span', { className: 'status' }, project.status) : null),
-      el('p', { className: 'tagline' }, project.tagline),
-      el('p', {}, project.description),
-      el('h3', {}, 'What was interesting'),
-      el('ul', { className: 'highlights' }, ...project.highlights.map((h) => el('li', {}, h))),
-      el('ul', { className: 'chips' }, ...project.stack.map((s) => el('li', {}, s))),
+      el('h2', { id: 'dialog-title' }, p.name, p.status ? el('span', { className: 'status' }, t(p.status)) : null),
+      el('p', { className: 'tagline' }, p.tagline),
+      el('p', {}, p.description),
+      el('h3', {}, t('interesting')),
+      el('ul', { className: 'highlights' }, ...p.highlights.map((h) => el('li', {}, h))),
+      el('ul', { className: 'chips' }, ...p.stack.map((s) => el('li', {}, s))),
       // only the ones on Render's free plan sleep; GitHub Pages answers right away
-      project.live?.includes('onrender.com') ? el('p', { className: 'note' }, 'The live site may take about 30 seconds to wake up.') : null,
+      p.live?.includes('onrender.com') ? el('p', { className: 'note' }, t('wakeUp')) : null,
       links,
     ),
   );
   // #trail in the address opens trail directly, so a project can be shared
-  if (push && location.hash !== `#${project.id}`) history.pushState(null, '', `#${project.id}`);
+  if (push && location.hash !== `#${project.id}`) history.pushState(null, '', `${location.search}#${project.id}`);
   if (!dialog.open) dialog.showModal();
   dialog.scrollTop = 0;
 }
 
 dialog.addEventListener('close', () => {
-  if (FEATURED.some((p) => `#${p.id}` === location.hash)) history.pushState(null, '', location.pathname);
+  shown = null;
+  if (FEATURED.some((p) => `#${p.id}` === location.hash)) history.pushState(null, '', location.pathname + location.search);
 });
 // a click on the dark area around the box closes it
 dialog.addEventListener('click', (event) => {
@@ -100,31 +119,26 @@ function fromAddress() {
 }
 addEventListener('popstate', fromAddress);
 
-document.getElementById('project-grid').append(...FEATURED.map(card));
-fromAddress();
-
 // filter by what it's made with. Hidden cards leave the grid, and the ones that stay slide
 // into their new place (the FLIP trick: measure, change, then animate from the old spot)
 const grid = document.getElementById('project-grid');
 const count = document.getElementById('filter-count');
-const buttons = TAGS.map(([tag, label]) =>
-  el('button', { type: 'button', dataset: { tag }, onclick: () => filter(tag) }, label),
-);
-buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tag === 'all')));
-document.getElementById('filters').append(...buttons);
+let current = 'all';
+const buttons = TAGS.map(([tag]) => el('button', { type: 'button', dataset: { tag }, onclick: () => filter(tag) }));
 
-function filter(tag) {
+function filter(tag, { animate = true } = {}) {
+  current = tag;
   const items = [...grid.children];
   const before = new Map(items.map((li) => [li, li.getBoundingClientRect()]));
-  let shown = 0;
+  let visible = 0;
   for (const li of items) {
     const match = tag === 'all' || li.dataset.tags.split(' ').includes(tag);
     li.hidden = !match;
-    if (match) shown++;
+    if (match) visible++;
   }
   buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tag === tag)));
-  count.textContent = tag === 'all' ? '' : `${shown} of ${items.length}`;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  count.textContent = tag === 'all' ? '' : t('shownOf')(visible, items.length);
+  if (!animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   for (const li of items) {
     if (li.hidden) continue;
     const old = before.get(li);
@@ -140,7 +154,6 @@ function filter(tag) {
     li.classList.add('in');
   }
 }
-document.getElementById('more-list').append(...MORE.map(moreItem));
 
 // reveal on scroll: each element animates once, the first time it shows up
 const reveal = new IntersectionObserver(
@@ -153,9 +166,62 @@ const reveal = new IntersectionObserver(
   },
   { rootMargin: '0px 0px -8% 0px' },
 );
+
+// everything that has words: the fixed text marked with data-i18n, the cards, the list, the
+// filter and an open project. Switching language redraws it in place, without animating again
+function render({ first = false } = {}) {
+  const words = UI[lang];
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+  document.title = words.title;
+  document.querySelector('meta[name=description]').content = words.description;
+  document.querySelectorAll('[data-i18n]').forEach((node) => {
+    node.textContent = words[node.dataset.i18n];
+  });
+  document.querySelectorAll('[data-i18n-label]').forEach((node) => {
+    node.setAttribute('aria-label', words[node.dataset.i18nLabel]);
+  });
+  const toggle = document.getElementById('lang');
+  toggle.textContent = words.langButton;
+  toggle.setAttribute('aria-label', words.langLabel);
+  toggle.lang = lang === 'pt' ? 'en' : 'pt';
+
+  TAGS.forEach(([, en, pt], i) => {
+    buttons[i].textContent = lang === 'pt' ? pt : en;
+  });
+  // the cards that already slid in stay put; the ones still below wait for the scroll
+  const moreList = document.getElementById('more-list');
+  const seen = (list) => !first && list.firstElementChild?.classList.contains('in');
+  const [cardsSeen, moreSeen] = [seen(grid), seen(moreList)];
+  const cards = FEATURED.map(card);
+  const more = MORE.map(moreItem);
+  grid.replaceChildren(...cards);
+  moreList.replaceChildren(...more);
+  cards.forEach((node) => (cardsSeen ? node.classList.add('in') : reveal.observe(node)));
+  more.forEach((node) => (moreSeen ? node.classList.add('in') : reveal.observe(node)));
+  filter(current, { animate: false });
+  if (shown) openProject(shown, { push: false });
+}
+
+document.getElementById('filters').append(...buttons);
+document.getElementById('lang').addEventListener('click', () => {
+  lang = lang === 'pt' ? 'en' : 'pt';
+  try {
+    localStorage.setItem('lang', lang);
+  } catch {
+    // nothing to do, it just won't be remembered
+  }
+  // a ?lang= in the address would win on the next visit, so it follows the switch
+  if (new URLSearchParams(location.search).has('lang')) {
+    history.replaceState(null, '', `?lang=${lang}${location.hash}`);
+  }
+  render();
+});
+
+render({ first: true });
+fromAddress();
 document.querySelectorAll('.reveal').forEach((node) => reveal.observe(node));
 
-// the progress line, the header border and the parallax of the hero all read the scroll,
+// the progress line, the header border and the fading glow of the hero all read the scroll,
 // so one listener updates them once per frame
 const root = document.documentElement;
 const header = document.querySelector('.top');

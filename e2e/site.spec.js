@@ -53,6 +53,33 @@ test('filters the projects by what they are made with', async ({ page }) => {
   await expect(page.locator('#filter-count')).toHaveText('');
 });
 
+test('switches to Portuguese and remembers it', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Ler em português' }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'pt-BR');
+  await expect(page.getByRole('link', { name: 'Ver os projetos' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Automação' })).toBeVisible();
+  await expect(page).toHaveTitle(/Desenvolvedor full-stack/);
+
+  await page.reload();
+  await expect(page.locator('h2').first()).toHaveText('Projetos');
+  await page.getByRole('button', { name: 'Read in English' }).click();
+  await expect(page.locator('h2').first()).toHaveText('Projects');
+});
+
+test('a link with ?lang=pt opens in Portuguese, project included', async ({ page }) => {
+  await page.goto('/?lang=pt#overlog');
+  const dialog = page.getByRole('dialog', { name: /overlog/ });
+  await expect(dialog.getByText('O app de treino que eu mesmo uso')).toBeVisible();
+  await expect(dialog.getByText('em andamento')).toBeVisible();
+  await expect(dialog.getByRole('link', { name: 'Abrir no ar' })).toBeVisible();
+
+  // the filter speaks Portuguese too
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Python' }).click();
+  await expect(page.locator('#filter-count')).toHaveText('3 de 10');
+});
+
 test('things appear as they scroll into view', async ({ page }) => {
   await page.goto('/');
   const last = page.locator('#contact h2');
@@ -81,7 +108,7 @@ test('no accessibility problems and nothing wider than the screen', async ({ pag
   for (const scheme of ['dark', 'light']) {
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
     // the page, and the page with a project open
-    for (const path of ['/', '/#expense-tracker']) {
+    for (const path of ['/', '/#expense-tracker', '/?lang=pt#booking-system']) {
       await page.goto(path);
       const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
       expect(results.violations.map((v) => `${scheme} ${path}: ${v.id}`)).toEqual([]);
