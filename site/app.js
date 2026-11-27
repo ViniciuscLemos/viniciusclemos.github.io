@@ -69,6 +69,28 @@ function moreItem(project) {
   );
 }
 
+// the address that opens this project directly, to paste in a message. The words come back
+// after a moment, and the status line says it for screen readers
+function copyLink(project) {
+  const button = el('button', { type: 'button', className: 'button ghost' }, t('copyLink'));
+  const said = el('span', { className: 'sr-only', role: 'status' });
+  button.addEventListener('click', async () => {
+    const url = `${location.origin}${location.pathname}${lang === 'pt' ? '?lang=pt' : ''}#${project.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      button.textContent = t('copied');
+      said.textContent = t('copied');
+      setTimeout(() => {
+        button.textContent = t('copyLink');
+        said.textContent = '';
+      }, 2000);
+    } catch {
+      // no clipboard (an old browser, or not allowed): the address bar has the same link
+    }
+  });
+  return el('span', {}, button, said);
+}
+
 // the details of one project, in a <dialog>: the browser already handles Esc, keeps the
 // focus inside and gives it back to the card when it closes
 const dialog = document.getElementById('project-dialog');
@@ -82,6 +104,7 @@ function openProject(project, { push = true } = {}) {
     { className: 'actions' },
     p.live ? el('a', { className: 'button', href: p.live, target: '_blank', rel: 'noopener' }, t('live')) : null,
     el('a', { className: 'button ghost', href: p.repo, target: '_blank', rel: 'noopener' }, t('code')),
+    copyLink(project),
   );
   dialog.querySelector('.dialog-body').replaceChildren(
     el('img', { src: p.image, alt: p.alt, width: 1280, height: 720 }),

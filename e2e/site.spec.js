@@ -26,6 +26,15 @@ test('a card opens the details of the project, and Esc closes them', async ({ pa
   await expect(page.getByRole('button', { name: 'trail' })).toBeFocused();
 });
 
+test('a project can be shared by its link', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/?lang=pt#trail');
+  const dialog = page.getByRole('dialog', { name: 'trail' });
+  await dialog.getByRole('button', { name: 'Copiar o link' }).click();
+  await expect(dialog.getByRole('button', { name: 'Link copiado' })).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/\?lang=pt#trail$/);
+});
+
 test('a project without a live site only links to the code', async ({ page }) => {
   await page.goto('/#recon');
   const dialog = page.getByRole('dialog', { name: /recon/ });

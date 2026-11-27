@@ -20,7 +20,7 @@ The projects come from one list in [`site/projects.js`](site/projects.js), so ad
 
 ### Projects you can click
 
-Each card opens the project in a `<dialog>`: a bigger screenshot, what was interesting to build, the stack, and links to the live site and the code. The browser's dialog already closes on Esc, keeps the keyboard inside and gives the focus back to the card. The address changes to `#trail`, `#recon`..., so a link to one project opens it directly, and the back button closes it.
+Each card opens the project in a `<dialog>`: a bigger screenshot, what was interesting to build, the stack, and links to the live site and the code. The browser's dialog already closes on Esc, keeps the keyboard inside and gives the focus back to the card. The address changes to `#trail`, `#recon`..., so a link to one project opens it directly, and the back button closes it. "Copy the link" puts that address on the clipboard, with `?lang=pt` when the page is in Portuguese.
 
 ![The details of trail: screenshot, description and what was interesting](docs/details.png)
 
